@@ -5,10 +5,7 @@ if (!response.ok) throw new Error(`Kunne ikke laste app.js: HTTP ${response.stat
 
 const source = await response.text();
 
-const precisionExtension = String.raw`
-
-// --- Precision finish extension ---
-(() => {
+function precisionFinishExtension() {
   const list = els.finishPositionList;
   if (!list) return;
 
@@ -97,9 +94,9 @@ const precisionExtension = String.raw`
   const observer = new MutationObserver(() => queueMicrotask(decorate));
   observer.observe(list, { childList: true, subtree: true });
   decorate();
-})();
-`;
+}
 
+const precisionExtension = `\n;(${precisionFinishExtension.toString()})();\n`;
 const blob = new Blob([source, precisionExtension, '\n//# sourceURL=coopertest-app-precision.js\n'], { type: 'text/javascript' });
 const url = URL.createObjectURL(blob);
 try {
