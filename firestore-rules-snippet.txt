@@ -1,0 +1,17 @@
+// Legg dette INNE i service cloud.firestore { match /databases/{database}/documents { ... } }
+// Forutsetter at coachtool1 allerede bruker users/{uid}.role == "coach".
+
+function isCoach() {
+  return request.auth != null
+    && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+    && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "coach";
+}
+
+match /cooperTests/{testId} {
+  allow read, create, update, delete: if isCoach();
+}
+
+match /cooperConfig/{docId} {
+  allow read, create, update: if isCoach();
+  allow delete: if false;
+}
