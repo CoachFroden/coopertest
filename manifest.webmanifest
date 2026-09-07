@@ -8,6 +8,7 @@
   "theme_color": "#07100d",
   "orientation": "portrait-primary",
   "icons": [
+    { "src": "/apple-touch-icon.png?v=20260908-1", "sizes": "180x180", "type": "image/png", "purpose": "any" },
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ]
 }
