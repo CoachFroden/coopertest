@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07100d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Cooper 12" />
+  <meta name="description" content="Cooper-test for Samnanger G14 – 12 minutter, rundetelling, sluttposisjon, historikk og spillerutvikling." />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css?v=20260908-1" />
+  <title>COOPER // 12</title>
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="grid-noise"></div>
+
+  <div id="authGate" class="auth-gate">
+    <section class="auth-card glass">
+      <div class="brand-mark">C//12</div>
+      <p class="eyebrow">SAMNANGER PERFORMANCE</p>
+      <h1>COOPER<br><span>12</span></h1>
+      <p class="muted">Logg inn med samme Firebase-bruker som i CoachTool.</p>
+      <form id="loginForm" class="login-form">
+        <label><span>E-post</span><input id="loginEmail" type="email" autocomplete="email" required /></label>
+        <label><span>Passord</span><input id="loginPassword" type="password" autocomplete="current-password" required /></label>
+        <button class="btn btn-primary btn-full" type="submit">ÅPNE COOPER CONTROL</button>
+        <p id="loginError" class="form-error" aria-live="polite"></p>
+      </form>
+    </section>
+  </div>
+
+  <div id="appRoot" class="app-root is-hidden">
+    <header class="topbar">
+      <button class="brand-button" data-nav="test" aria-label="Gå til test">
+        <span class="brand-mark mini">C//12</span>
+        <span><strong>COOPER 12</strong><small>SAMNANGER G14</small></span>
+      </button>
+      <div class="topbar-actions">
+        <button id="cloudStatus" class="cloud-status" type="button"><i></i><span>Firestore</span></button>
+        <button id="logoutBtn" class="icon-btn" title="Logg ut" aria-label="Logg ut">↗</button>
+      </div>
+    </header>
+
+    <main class="main-shell">
+      <section id="view-test" class="view active">
+        <div id="setupPanel">
+          <section class="hero-panel">
+            <div>
+              <p class="eyebrow">COOPER CONTROL / 01</p>
+              <h2>12 MIN.<br><span>SÅ LANGT DU KAN.</span></h2>
+              <p class="hero-copy">Tell hele 400 m-runder mens guttene løper. Når sluttsignalet går stopper alle og blir stående til sluttposisjonen er registrert.</p>
+            </div>
+            <div class="route-visual" aria-label="Testoppsett">
+              <div><b>12</b><span>MIN</span></div>
+              <div><b>400</b><span>M / RUNDE</span></div>
+              <div><b>100</b><span>M MERKER</span></div>
+              <p>Sluttdistanse = <strong>runder + sluttposisjon</strong></p>
+            </div>
+          </section>
+
+          <section class="card glass setup-card">
+            <div class="section-head">
+              <div><p class="eyebrow">STARTLISTE</p><h3>Hvem løper?</h3></div>
+              <div class="tiny-actions"><button id="selectAllBtn" class="text-btn" type="button">Alle</button><button id="selectNoneBtn" class="text-btn" type="button">Ingen</button></div>
+            </div>
+            <div id="participantGrid" class="participant-grid"></div>
+            <form id="quickAddForm" class="quick-add">
+              <input id="quickAddInput" type="text" maxlength="40" placeholder="Ekstra spiller…" autocomplete="off" />
+              <button class="btn btn-secondary" type="submit">+ LEGG TIL</button>
+            </form>
+
+            <div class="mode-row">
+              <div><strong>Testmodus</strong><small>Kjør hele testen uten permanent lagring eller PB.</small></div>
+              <label class="switch"><input id="testModeToggle" type="checkbox" /><span></span></label>
+            </div>
+
+            <div class="instruction-box">
+              <span>VIKTIG BESKJED FØR START</span>
+              <strong>«Når signalet går: STOPP med en gang og STÅ I RO.»</strong>
+            </div>
+
+            <div class="start-bar">
+              <div><strong id="selectedCount">0</strong><span>valgt</span></div>
+              <button id="startBtn" class="btn btn-start" type="button">START COOPER</button>
+            </div>
+          </section>
+        </div>
+
+        <section id="livePanel" class="live-panel is-hidden">
+          <div class="race-header">
+            <div><p id="liveEyebrow" class="eyebrow pulse-label"><i></i> LIVE · RUNDEREGISTRERING</p><h2>COOPER CONTROL</h2></div>
+            <div class="race-progress"><strong id="elapsedClock">12:00</strong><span id="livePhaseText">igjen</span></div>
+          </div>
+
+          <div class="clock-card glass">
+            <span class="clock-label">TID IGJEN</span>
+            <div id="liveClock" class="live-clock">12:00</div>
+            <div class="clock-track"><span id="clockTrackFill"></span></div>
+            <p id="liveHint">Trykk på en spiller hver gang han passerer start/mål. Ett trykk = +400 m.</p>
+          </div>
+
+          <div class="live-toolbar glass">
+            <div><span>Registrerte passeringer</span><strong id="lapCountTotal">0</strong></div>
+            <button id="undoGlobalBtn" class="btn btn-secondary" type="button" disabled>↶ ANGRE SISTE</button>
+          </div>
+
+          <div id="lapGrid" class="lap-grid"></div>
+
+          <div class="race-controls glass">
+            <button id="stopEarlyBtn" class="btn btn-danger" type="button">■ STOPP TEST TIDLIG</button>
+          </div>
+        </section>
+
+        <section id="finishPanel" class="finish-panel is-hidden">
+          <div class="finish-alert">
+            <p>12:00 · SLUTTSIGNAL</p>
+            <h2>STOPP. STÅ I RO.</h2>
+            <span>Registrer hvor på banen hver spiller står. Hele runder er allerede telt.</span>
+          </div>
+
+          <div class="finish-head">
+            <div><p class="eyebrow">SLUTTPOSISJON</p><h2>REGISTRER SISTE DEL</h2></div>
+            <div class="finish-progress"><strong id="finalizedCount">0</strong><span id="finalizedTotal">/ 0 ferdig</span></div>
+          </div>
+
+          <div id="finishPositionList" class="finish-position-list"></div>
+
+          <div class="finish-actions glass">
+            <button id="finishTestBtn" class="btn btn-start" type="button" disabled>LAGRE RESULTATER</button>
+          </div>
+        </section>
+      </section>
+
+      <section id="view-results" class="view">
+        <div class="page-head">
+          <div><p class="eyebrow">RACE ARCHIVE / 02</p><h2>RESULTATER</h2></div>
+          <label class="filter-select"><span>Vis spiller</span><select id="playerFilter"><option value="">Alle</option></select></label>
+        </div>
+        <div id="resultStats" class="stats-grid"></div>
+        <section id="developmentPanel" class="development-panel glass is-hidden"></section>
+        <div id="historyList" class="history-list"></div>
+      </section>
+
+      <section id="view-players" class="view">
+        <div class="page-head"><div><p class="eyebrow">TEAM DATA / 03</p><h2>SPILLERE</h2><p class="muted">Spillerlisten brukes som startliste på nye Cooper-tester.</p></div></div>
+        <section class="card glass">
+          <form id="rosterAddForm" class="quick-add roster-add">
+            <input id="rosterAddInput" type="text" maxlength="40" placeholder="Nytt navn…" autocomplete="off" />
+            <button class="btn btn-primary" type="submit">+ LEGG TIL SPILLER</button>
+          </form>
+          <div id="rosterList" class="roster-list"></div>
+          <div class="roster-footer"><button id="resetRosterBtn" class="text-btn danger-text" type="button">Tilbakestill til G14-standardtropp</button></div>
+        </section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Hovedmeny">
+      <button class="nav-item active" data-nav="test"><span>◉</span><b>Test</b></button>
+      <button class="nav-item" data-nav="results"><span>▥</span><b>Resultater</b></button>
+      <button class="nav-item" data-nav="players"><span>◎</span><b>Spillere</b></button>
+    </nav>
+  </div>
+
+  <div id="countdownOverlay" class="countdown-overlay is-hidden" aria-live="assertive">
+    <p>COOPER 12</p><strong id="countdownNumber">3</strong><span id="countdownText">KLAR</span>
+  </div>
+  <div id="finishSignalOverlay" class="finish-signal-overlay is-hidden" aria-live="assertive">
+    <p>12:00</p><strong>STOPP!</strong><span>STÅ I RO DER DU ER</span>
+  </div>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script type="module" src="/app.js?v=20260908-1"></script>
+</body>
+</html>
