@@ -1,4 +1,4 @@
-const APP_URL = '/app.js?v=20260908-1';
+const APP_URL = './app.js?v=20260908-1';
 
 const response = await fetch(APP_URL, { cache: 'no-store' });
 if (!response.ok) throw new Error(`Kunne ikke laste app.js: HTTP ${response.status}`);
